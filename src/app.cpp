@@ -60,6 +60,9 @@ MyWindow::MyWindow() {
 
 void MyWindow::OnStartClick() {
 	working_dir = pathEntry.get_text();
+	if (working_dir[working_dir.size() - 1] != '/') {
+		working_dir = working_dir + '/';
+	}
 	list_of_files = file_manager.findAllFiles(working_dir);
 	file_manager.distributeFiles(list_of_files, working_dir);
 }

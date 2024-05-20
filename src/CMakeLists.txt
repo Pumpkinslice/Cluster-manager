@@ -18,7 +18,7 @@ if (MSVC)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
 endif()
 
-add_executable (ClusterApp ${GUI_OPTION} "app.cpp" "app.h" )
+add_executable (ClusterApp ${GUI_OPTION} "app.cpp" "app.h"  "file_management.h"   "file.h" )
 
 target_link_libraries(ClusterApp PRIVATE PkgConfig::GTKMM_LIB)
 target_compile_features(ClusterApp PRIVATE cxx_std_17)

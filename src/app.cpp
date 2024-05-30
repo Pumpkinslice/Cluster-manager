@@ -20,25 +20,25 @@ std::string debug_text = "";
 
 MyWindow::MyWindow() {
 	//window customization
-	set_title("File clusterization master");
+	set_title(u8"Мастер кластеризации файлов");
 	set_default_size(500, 350);
 	//widget customization
-	startButton.set_label("Begin Algorithm");
+	startButton.set_label(u8"Запустить алгоритм");
 	startButton.set_margin_start(50); startButton.set_margin_end(50); startButton.set_margin_top(20);
 	startButton.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::OnStartClick));
-	beginText.set_text("This programm allows to automatically sort and cluster large quantities of files.\nBefore starting the algorithm, choose required settings.");
+	beginText.set_text(u8"Эта программа позволит вам отсортировать и архивировтаь массивы файлов.\nПеред началом выберите необходимые настройки.");
 	beginText.set_justify(Gtk::Justification::CENTER);
 	beginText.set_margin_top(10); beginText.set_margin_bottom(10); beginText.set_margin_start(10); beginText.set_margin_end(10);
 	debugText.set_text(debug_text);
 	debugText.set_margin_top(10); debugText.set_margin_bottom(10); debugText.set_margin_start(10); debugText.set_margin_end(10);
-	pathText.set_text("Select file path:");
+	pathText.set_text(u8"Введите путь к файлам:");
 	pathText.set_margin_top(10); pathText.set_margin_bottom(10); pathText.set_margin_start(10); pathText.set_margin_end(10);
-	algorithmText.set_text("Select clasterization algorithm:");
+	algorithmText.set_text(u8"Выберите алгоритм кластеризации:");
 	algorithmText.set_margin_top(10); algorithmText.set_margin_bottom(10); algorithmText.set_margin_start(10); algorithmText.set_margin_end(10);
-	archiveText.set_text("Select the type of archive required to apply:");
+	archiveText.set_text(u8"Выберите тип архивирования:");
 	archiveText.set_margin_top(10); archiveText.set_margin_bottom(10); archiveText.set_margin_start(10); archiveText.set_margin_end(10);
-	alg1But.set_label("K-means"); alg2But.set_label("Hierarchy"); alg3But.set_label("DBSCAN");
-	arch1But.set_label("No archive"); arch2But.set_label("Zip archive"); arch3But.set_label("Tar archive");
+	alg1But.set_label(u8"К-средних"); alg2But.set_label(u8"Иерархический"); alg3But.set_label(u8"DBSCAN");
+	arch1But.set_label(u8"Без архивации"); arch2But.set_label(u8"Zip архив"); arch3But.set_label(u8"Tar архив");
 	alg1But.set_active(true); arch1But.set_active(true);
 	alg1But.signal_toggled().connect(sigc::mem_fun(*this, &MyWindow::OnAlg1Click));
 	alg2But.signal_toggled().connect(sigc::mem_fun(*this, &MyWindow::OnAlg2Click));

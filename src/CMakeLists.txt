@@ -1,4 +1,4 @@
-﻿cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required (VERSION 3.14)
 
 if (NOT VCPKG_TOOLCHAIN)
   find_package(PkgConfig)
@@ -18,7 +18,10 @@ if (MSVC)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
 endif()
 
-add_executable (ClusterApp ${GUI_OPTION} "app.cpp" "app.h"  "file_management.h"   "file.h" )
+include_directories("C:/dev/vcpkg/installed/x64-windows/include")
+link_directories("C:/dev/vcpkg/installed/x64-windows/lib")
 
-target_link_libraries(ClusterApp PRIVATE PkgConfig::GTKMM_LIB)
+add_executable (ClusterApp ${GUI_OPTION} "app.cpp" "app.h"  "file_management.h"   "file.h"  "global.h")
+
+target_link_libraries(ClusterApp PRIVATE PkgConfig::GTKMM_LIB PRIVATE sqlite3 PRIVATE zlib)
 target_compile_features(ClusterApp PRIVATE cxx_std_17)

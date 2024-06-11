@@ -1,4 +1,4 @@
-﻿cmake_minimum_required (VERSION 3.14)
+﻿cmake_minimum_required (VERSION 3.28)
 
 if (NOT VCPKG_TOOLCHAIN)
   find_package(PkgConfig)
@@ -21,7 +21,7 @@ endif()
 include_directories("C:/dev/vcpkg/installed/x64-windows/include")
 link_directories("C:/dev/vcpkg/installed/x64-windows/lib")
 
-add_executable (ClusterApp ${GUI_OPTION} "app.cpp" "app.h"  "file_management.h"   "file.h"  "global.h")
+add_executable (ClusterApp ${GUI_OPTION} "app.cpp" "app.h"  "file_management.h"   "file.h"  "global.h" "result_screen.h")
 
 target_link_libraries(ClusterApp PRIVATE PkgConfig::GTKMM_LIB PRIVATE sqlite3 PRIVATE zlib)
 target_compile_features(ClusterApp PRIVATE cxx_std_17)

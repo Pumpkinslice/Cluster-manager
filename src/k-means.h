@@ -1,6 +1,7 @@
 #pragma once
 #include "global.h"
 #include "math_functions.h"
+#include "file_management.h"
 
 struct cluster {
 	int center_ext;
@@ -35,12 +36,14 @@ void find_ext_ranges() {
 	}
 }
 
+//convert extension string into int
 int ext_to_int(std::string ext) {
 	for (int i = 0; i != extensions.size(); i++) {
 		if (extensions[i] == ext) { return i; }
 	}
 }
 
+//find minimum distance
 int min_distance(std::vector <double> distances) {
 	int min_dist = 0;
 	for (int i = 0; i != distances.size(); i++) {
@@ -68,12 +71,14 @@ double distance(File object, cluster center) {
 std::string print_clusters() {
 	std::string output = u8"Созданные кластеры:\n";
 	for (int i = 0; i != clusters.size(); i++) {
-		output = output + u8"Координаты: " + std::to_string(clusters[i].center_size) + u8" " + std::to_string(clusters[i].center_ext) + u8"\nФайлы кластера:\n";
+		output = output + u8"Координаты: X=" + std::to_string(clusters[i].center_ext) + u8" Y=" + std::to_string(clusters[i].center_size) + u8"\nФайлы кластера:\n";
 		for (int j = 0; j != clusters[i].files.size(); j++) {
 			output = output + clusters[i].files[j].name + u8"\n";
 		}
 		output = output + u8"\n";
 	}
+	//cleanup at the end of execution
+	max_size = 0; min_size = 4294967295; extensions.clear(); clusters.clear();
 	return output;
 }
 
@@ -98,6 +103,7 @@ bool repetition(unsigned int target, std::vector <unsigned int> store) {
 	return contains;
 }
 
+//full iteration cycle, returns difference between centers
 unsigned int iteration() {
 	for (int i = 0; i != clusters.size(); i++) {
 		clusters[i].files.clear();
@@ -168,9 +174,13 @@ std::string K_means_algorithm() {
 			diff_store.push_back(diff);
 		}
 	}
-	//cleanup
-	max_size = 0; min_size = 4294967295;
-	extensions.clear(); clusters.clear();
+	//reallocate files
+	for (int i = 0; i != numClusters; i++) {
+		makeDirectory(working_dir, "Cluster" + std::to_string(i + 1));
+		for (int j = 0; j != clusters[i].files.size(); j++) {
+			moveToDirectory(working_dir, clusters[i].files[j].name + "." + clusters[i].files[j].extension, "Cluster" + std::to_string(i + 1));
+		}
+	}
 	//returns the results for visualisation
 	return std::to_string(iteration_counter) + u8" итераций.\n" + print_clusters();
 }

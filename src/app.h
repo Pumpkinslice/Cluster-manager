@@ -1,6 +1,8 @@
 #pragma once
 #include "global.h"
 #include "result_screen.h"
+#include "file_management.h"
+#include "k-means.h"
 
 //Main menu of this programm
 class MenuScreen : public Gtk::Window {
@@ -17,18 +19,19 @@ public:
 			if (working_dir[working_dir.size() - 1] != '/' && working_dir[working_dir.size() - 1] != '\\') { //failsafe for slash at the end
 				working_dir = working_dir + '/';
 			}
+			std::string results;
+			list_of_files = findAllFiles(working_dir);
 			if (chosen_algorithm == 'n') {
-				list_of_files = file_manager.findAllFiles(working_dir);
-				file_manager.distributeFiles(list_of_files, working_dir);
+				distributeFiles(list_of_files, working_dir);
 			} else if (chosen_algorithm == 'k') {
-
+				results = K_means_algorithm();
 			} else if (chosen_algorithm == 'h') {
 
 			} else if (chosen_algorithm == 'd') {
 
 			}
 			list_of_files.clear(); //memory cleanup
-			Gtk::Application::create("org.gtkmm.examples.base")->make_window_and_run<ResultScreen>(0, nullptr);
+			Gtk::Application::create("org.gtkmm.examples.base")->make_window_and_run<ResultScreen>(0, nullptr, results);
 		}
 	}
 

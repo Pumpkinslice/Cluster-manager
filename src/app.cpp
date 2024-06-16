@@ -13,6 +13,7 @@
 #include "result_screen.h"
 #include "app.h"
 #include "global.h"
+#include "k-means.h"
 
 int main(int argc, char* argv[]) {
     auto app = Gtk::Application::create("org.gtkmm.examples.base");

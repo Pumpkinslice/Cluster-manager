@@ -8,8 +8,8 @@
 class MenuScreen : public Gtk::Window {
 public:
 	Gtk::Button startButton, searchButton;
-	Gtk::Entry pathEntry;
-	Gtk::Label beginText, pathText, algorithmText, archiveText, debugText, anchor;
+	Gtk::Entry pathEntry, numberEntry;
+	Gtk::Label beginText, pathText, algorithmText, archiveText, numberText, anchor;
 	Gtk::CheckButton alg1But,alg2But, alg3But, arch2But, arch3But;
 	Gtk::Grid grid;
 
@@ -24,7 +24,7 @@ public:
 			if (chosen_algorithm == 'n') {
 				distributeFiles(list_of_files, working_dir);
 			} else if (chosen_algorithm == 'k') {
-				results = K_means_algorithm();
+				results = K_means_algorithm(std::stoi(numberEntry.get_text()));
 			} else if (chosen_algorithm == 'h') {
 
 			} else if (chosen_algorithm == 'd') {
@@ -90,23 +90,18 @@ public:
 		}
 	}
 
-	void debug_print(std::string text) {
-		debugText.set_text(text);
-	}
-
 	MenuScreen() {
 		//window customization
 		set_title(u8"Мастер кластеризации файлов");
 		set_default_size(300, 350);
 		//widget customization
 		startButton.set_label(u8"Запустить алгоритм");
-		startButton.set_margin_start(50); startButton.set_margin_end(50); startButton.set_margin_top(20);
+		startButton.set_margin_start(50); startButton.set_margin_end(50); startButton.set_margin_top(20); startButton.set_margin_bottom(20);
 		startButton.signal_clicked().connect(sigc::mem_fun(*this, &MenuScreen::OnStartClick));
 		searchButton.set_label(u8"\U0001F50E"); searchButton.set_margin_start(10);
-		beginText.set_text(u8"Эта программа позволит вам отсортировать и архивировтаь массивы файлов.\nПеред началом выберите необходимые настройки.");
+		beginText.set_text(u8"Эта программа позволит вам отсортировать и архивировать массивы файлов.\nПеред началом выберите необходимые настройки.");
 		beginText.set_justify(Gtk::Justification::CENTER);
 		beginText.set_margin_top(10); beginText.set_margin_bottom(10); beginText.set_margin_start(10); beginText.set_margin_end(10);
-		debugText.set_margin_top(10); debugText.set_margin_bottom(10); debugText.set_margin_start(10); debugText.set_margin_end(10);
 		pathText.set_text(u8"Введите путь к файлам:");
 		pathText.set_margin_top(10); pathText.set_margin_bottom(10); pathText.set_margin_start(10); pathText.set_margin_end(10);
 		algorithmText.set_text(u8"Выберите алгоритм кластеризации:");
@@ -123,16 +118,19 @@ public:
 		alg1But.set_margin_start(10); alg3But.set_margin_end(10);
 		arch2But.set_margin_start(10); arch3But.set_margin_end(10);
 		pathEntry.set_margin_end(10);
+		numberText.set_text(u8"Количество кластеров для К-средних:");
+		numberText.set_margin_top(10); numberText.set_margin_bottom(10); numberText.set_margin_start(10); numberText.set_margin_end(10);
+		numberEntry.set_margin_end(10);
 		//widget attachment
 		grid.attach(anchor, 0, 1);
 		grid.attach(searchButton, 0, 2);
 		grid.attach(pathText, 1, 1); grid.attach(algorithmText, 1, 3); grid.attach(archiveText, 1, 5);
 		grid.attach_next_to(beginText, anchor, Gtk::PositionType::TOP, 3, 1);
 		grid.attach_next_to(pathEntry, pathText, Gtk::PositionType::BOTTOM, 2, 1);
-		grid.attach(startButton, 1, 7);
+		grid.attach(numberText, 1, 7); grid.attach(numberEntry, 2, 7);
+		grid.attach(startButton, 1, 8);
 		grid.attach(alg1But, 0, 4); grid.attach(alg2But, 1, 4); grid.attach(alg3But, 2, 4);
 		grid.attach(arch2But, 0, 6); grid.attach(arch3But, 2, 6);
-		grid.attach(debugText, 1, 8);
 		set_child(grid);
 	}
 };

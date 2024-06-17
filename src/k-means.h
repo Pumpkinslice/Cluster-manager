@@ -2,6 +2,7 @@
 #include "global.h"
 #include "math_functions.h"
 #include "file_management.h"
+#include <chrono>
 
 struct cluster {
 	int center_ext;
@@ -65,6 +66,7 @@ double distance(File object, cluster center) {
 	} else {
 		ext_diff = center.center_ext - ext_to_int(object.extension);
 	}
+	//расчет расстояния по формуле прямугольного треугольника
 	return sqrt((size_diff * size_diff) + (ext_diff * ext_diff));
 }
 
@@ -120,7 +122,7 @@ unsigned int iteration() {
 	for (int i = 0; i != clusters.size(); i++) {
 		clusters[i].files.clear();
 	}
-	//E-step, calculate distances
+	//E-шаг, найти расстояния до центров
 	for (int i = 0; i != list_of_files.size(); i++) {
 		std::vector <double> distances;
 		for (int j = 0; j != clusters.size(); j++) {
@@ -128,53 +130,46 @@ unsigned int iteration() {
 		}
 		clusters[min_distance(distances)].files.push_back(list_of_files[i]);
 	}
-	//tracks difference in center's positions
+	//разница между позициями центров кластеров
 	unsigned int difference = 0;
-	//M-step, adjust centers
+	//M-шаг, подправить координаты центров
 	for (int i = 0; i != clusters.size(); i++) {
 		if (clusters[i].files.size() != 0) {
-			long int mean_size = 0;
-			long int mean_ext = 0;
+			long int mean_size = 0, mean_ext = 0;
 			for (int j = 0; j != clusters[i].files.size(); j++) {
 				mean_size = mean_size + clusters[i].files[j].size;
 				mean_ext = mean_ext + ext_to_int(clusters[i].files[j].extension);
 			}
 			mean_size = mean_size / (clusters[i].files.size());
 			mean_ext = round_divide(mean_ext, clusters[i].files.size());
-			if (clusters[i].center_size > mean_size) {
-				difference = difference + clusters[i].center_size - mean_size;
-			} else {
-				difference = difference + mean_size - clusters[i].center_size;
-			}
-			if (clusters[i].center_size > mean_ext) {
-				difference = difference + clusters[i].center_size - mean_ext;
-			}
-			else {
-				difference = difference + mean_ext - clusters[i].center_size;
-			}
-			clusters[i].center_size = mean_size;
-			clusters[i].center_ext = mean_ext;
+			if (clusters[i].center_size > mean_size) { 
+				difference = difference + clusters[i].center_size - mean_size; }
+			else { difference = difference + mean_size - clusters[i].center_size; }
+			if (clusters[i].center_size > mean_ext) { 
+				difference = difference + clusters[i].center_size - mean_ext; }
+			else { difference = difference + mean_ext - clusters[i].center_size; }
+			clusters[i].center_size = mean_size; clusters[i].center_ext = mean_ext;
 		}
 	}
 	return difference;
 }
 
 //Algorithm starts here
-std::string K_means_algorithm() {
+std::string K_means_algorithm(int numClusters) {
+	auto start = std::chrono::high_resolution_clock::now();
 	//set random centers
 	std::thread thread1(find_size_ranges);
 	std::thread thread2(find_ext_ranges);
 	thread1.join();
 	thread2.join();
-	int numClusters = 3;
-	//set random cluster centers
+	//Обозначить случайные центры кластеров
 	for (int i = 0; i != numClusters; i++) {
 		cluster newCluster;
 		newCluster.center_ext = randint(0, extensions.size() - 1);
 		newCluster.center_size = randint(min_size, max_size);
 		clusters.push_back(newCluster);
 	}
-	//start iterations
+	//запуск итераций
 	iteration();
 	unsigned short int iteration_counter = 1;
 	std::vector <unsigned int> diff_store;
@@ -187,15 +182,16 @@ std::string K_means_algorithm() {
 			diff_store.push_back(diff);
 		}
 	}
-	//write results to SQLite
+	//записать результаты в SQLite
 	writeToDB(insert_command());
-	//reallocate files
+	//распределить файлы по папкам кластеров
 	for (int i = 0; i != numClusters; i++) {
 		makeDirectory(working_dir, "Cluster" + std::to_string(i + 1));
 		for (int j = 0; j != clusters[i].files.size(); j++) {
 			moveToDirectory(working_dir, clusters[i].files[j].name + "." + clusters[i].files[j].extension, "Cluster" + std::to_string(i + 1));
 		}
 	}
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start);
 	//returns the results for visualisation
-	return std::to_string(iteration_counter) + u8" итераций.\n" + print_clusters();
+	return std::to_string(iteration_counter) + u8" итераций за " + std::to_string(duration.count()) + u8" миллисекунд.\n" + print_clusters();
 }

@@ -2,7 +2,7 @@
 #include "global.h"
 #include "result_screen.h"
 #include "file_management.h"
-#include "k-means.h"
+#include "clusterization.h"
 
 //Main menu of this programm
 class MenuScreen : public Gtk::Window {

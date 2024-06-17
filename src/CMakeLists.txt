@@ -21,7 +21,7 @@ endif()
 include_directories("C:/dev/vcpkg/installed/x86-windows/include")
 link_directories("C:/dev/vcpkg/installed/x86-windows/lib")
 
-add_executable (ClusterApp ${GUI_OPTION} "app.cpp" "app.h"  "file_management.h"   "file.h"  "global.h" "result_screen.h" "k-means.h" "math_functions.h")
+add_executable (ClusterApp ${GUI_OPTION} "app.cpp" "app.h"  "file_management.h"   "file.h"  "global.h" "result_screen.h" "clusterization.h" "math_functions.h")
 
-target_link_libraries(ClusterApp PRIVATE PkgConfig::GTKMM_LIB PRIVATE sqlite3)
+target_link_libraries(ClusterApp PRIVATE PkgConfig::GTKMM_LIB PRIVATE sqlite3 PRIVATE zlib)
 target_compile_features(ClusterApp PRIVATE cxx_std_17)

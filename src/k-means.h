@@ -82,6 +82,18 @@ std::string print_clusters() {
 	return output;
 }
 
+std::string insert_command() {
+	std::string output = std::to_string(list_of_files.size()) + ", " + std::to_string(clusters.size()) + ", '";
+	for (int i = 0; i != clusters.size(); i++) {
+		output = output + std::to_string(clusters[i].center_size) + "_";
+	}
+	output = output + "', '";
+	for (int i = 0; i != clusters.size(); i++) {
+		output = output + std::to_string(clusters[i].center_ext) + "_";
+	}
+	return output + "'";
+}
+
 bool repetition(unsigned int target, std::vector <unsigned int> store) {
 	bool contains = false;
 	//check for repeating actions
@@ -155,6 +167,7 @@ std::string K_means_algorithm() {
 	thread1.join();
 	thread2.join();
 	int numClusters = 3;
+	//set random cluster centers
 	for (int i = 0; i != numClusters; i++) {
 		cluster newCluster;
 		newCluster.center_ext = randint(0, extensions.size() - 1);
@@ -174,6 +187,8 @@ std::string K_means_algorithm() {
 			diff_store.push_back(diff);
 		}
 	}
+	//write results to SQLite
+	writeToDB(insert_command());
 	//reallocate files
 	for (int i = 0; i != numClusters; i++) {
 		makeDirectory(working_dir, "Cluster" + std::to_string(i + 1));

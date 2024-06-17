@@ -35,6 +35,27 @@ std::vector<File> findAllFiles(std::string workdir) {
 	return list_of_files;
 }
 
+void writeToDB(std::string insert) {
+	sqlite3* database;
+	sqlite3_open("C:/Users/hp/Desktop/Projects VS/ClusterApp/src/SQLite DB.db", &database);
+	std::string command = "CREATE TABLE IF NOT EXISTS PREDICTIONS("
+		"NUMOFFILES INT NOT NULL, "
+		"NUMOFCLUSTERS INT NOT NULL, "
+		"CENTERSIZE CHAR(50), "
+		"CENTEREXT CHAR(50) );";
+	char* error;
+	sqlite3_exec(database, command.c_str(), NULL, 0, &error);
+	insert = "INSERT INTO PREDICTION (NUMOFFILES, NUMOFCLUSTERS, CENTERSIZE, CENTEREXT) VALUES(" + insert + ");";
+	sqlite3_exec(database, insert.c_str(), NULL, 0, &error);
+	sqlite3_close(database);
+}
+
+void archive(std::string workdir, std::string archive_type) {
+	for (const auto& entry : std::filesystem::directory_iterator(workdir)) {
+		rename(entry.path().string().c_str(), (entry.path().string() + "." + archive_type).c_str());
+	}
+}
+
 //if none algorithms are selected
 void distributeFiles(std::vector<File> list_of_files, std::string workdir) {
 	//create all necesary directories

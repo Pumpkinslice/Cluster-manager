@@ -18,10 +18,10 @@ if (MSVC)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
 endif()
 
-include_directories("C:/dev/vcpkg/installed/x64-windows/include")
-link_directories("C:/dev/vcpkg/installed/x64-windows/lib")
+include_directories("C:/dev/vcpkg/installed/x86-windows/include")
+link_directories("C:/dev/vcpkg/installed/x86-windows/lib")
 
 add_executable (ClusterApp ${GUI_OPTION} "app.cpp" "app.h"  "file_management.h"   "file.h"  "global.h" "result_screen.h" "k-means.h" "math_functions.h")
 
-target_link_libraries(ClusterApp PRIVATE PkgConfig::GTKMM_LIB PRIVATE sqlite3 PRIVATE zlib)
+target_link_libraries(ClusterApp PRIVATE PkgConfig::GTKMM_LIB PRIVATE sqlite3)
 target_compile_features(ClusterApp PRIVATE cxx_std_17)

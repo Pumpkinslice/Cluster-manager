@@ -30,6 +30,11 @@ public:
 			} else if (chosen_algorithm == 'd') {
 
 			}
+			if (chosen_archive == 'z') {
+				archive(working_dir, "zip");
+			} else if (chosen_archive == 't') {
+				archive(working_dir, "tar");
+			}
 			list_of_files.clear(); //memory cleanup
 			Gtk::Application::create("org.gtkmm.examples.base")->make_window_and_run<ResultScreen>(0, nullptr, results);
 		}
